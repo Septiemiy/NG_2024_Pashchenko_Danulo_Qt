@@ -5,6 +5,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    cout << "Danil" << endl << "Pashchenko" << endl;
+    cout << "Danilo" << endl << "Pashchenko" << endl;
     return 0;
 }
