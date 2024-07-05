@@ -1,9 +1,8 @@
-#include <QCoreApplication>
 #include <iostream>
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
     int firstNumber = 0;
     int secondNumber = 0;
@@ -14,6 +13,4 @@ int main(int argc, char *argv[])
     cin >> secondNumber;
 
     cout << endl << "Result: " << firstNumber + secondNumber << endl;
-
-    return 0;
 }
