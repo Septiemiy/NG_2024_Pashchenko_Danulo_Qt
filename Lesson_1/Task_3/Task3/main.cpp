@@ -1,9 +1,8 @@
-#include <QCoreApplication>
 #include <iostream>
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
     cout << "Input your income: ";
     int income = 0;
@@ -13,9 +12,9 @@ int main(int argc, char *argv[])
     {
         cout << "Work more!";
     }
-    if(income > 1000)
+    if(income > 999)
     {
-        if(income > 1000000)
+        if(income > 999999)
             cout << "Your millionaier!";
         if(income < 1000000)
             cout << "You work good!";
