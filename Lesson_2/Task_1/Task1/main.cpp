@@ -23,7 +23,7 @@ void putMoney(int* bank_accounts)
     cout << endl << "Input the amount of money: ";
     cin >> money;
 
-    bank_accounts[bank_account_number - 1] += money;
+    bank_accounts[bank_account_number - 1] += abs(money);
 }
 
 void takeMoney(int* bank_accounts)
@@ -35,14 +35,14 @@ void takeMoney(int* bank_accounts)
     cout << endl << "Input the amount of money: ";
     cin >> money;
 
-    if(bank_accounts[bank_account_number - 1] < money)
+    if(bank_accounts[bank_account_number - 1] < abs(money))
     {
         cout << endl << "   Error: There is not enough money in the bank account." << endl;
         takeMoney(bank_accounts);
     }
     else
     {
-        bank_accounts[bank_account_number - 1] -= money;
+        bank_accounts[bank_account_number - 1] -= abs(money);
     }
 }
 
