@@ -13,11 +13,27 @@ int main()
     getline(cin, sentence);
 
     size_t position = 0;
+    string word = "";
     while ((position = sentence.find(space)) != -1) {
-        wordsCount++;
+        word = sentence.substr(0, position);
+        try
+        {
+            stoi(word);
+        }
+        catch(...)
+        {
+            wordsCount++;
+        }
         sentence.erase(0, position + space.length());
     }
-    wordsCount++;
+    try
+    {
+        stoi(sentence);
+    }
+    catch(...)
+    {
+        wordsCount++;
+    }
 
     cout << endl << "Count words: " << wordsCount;
     return 0;
