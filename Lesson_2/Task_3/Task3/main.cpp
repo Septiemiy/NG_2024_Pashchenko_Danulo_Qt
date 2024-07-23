@@ -14,7 +14,7 @@ int main()
     {
         cout << "Input some shit amount in " << index + 1 << " elements: ";
         cin >> element;
-        some_shit[index] = element;
+        some_shit[index] = abs(element);
         if(element > max_element)
         {
             max_element = element;
