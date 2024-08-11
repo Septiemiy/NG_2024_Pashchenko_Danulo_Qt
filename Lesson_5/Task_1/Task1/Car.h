@@ -5,11 +5,6 @@
 
 class Car : public CarParent
 {
-private:
-    QString m_model_range;
-    int m_number_seats;
-    QString m_color;
-
 public:
     Car() {}
     ~Car() {}
@@ -24,6 +19,11 @@ public:
     QString getColor() { return m_color; }
     int getPrice() { return m_price; }
     QString getType() { return m_type; }
+
+private:
+    QString m_model_range;
+    int m_number_seats;
+    QString m_color;
 };
 
 #endif // CAR_H

@@ -24,10 +24,7 @@ public:
 public:
     void initCars();
     void initCarsTabs();
-    void setProducerFilter();
-    void setTypeFilter();
-    void setPriceFilter();
-    void setNoneFilter();
+    void setFilter(QString filterType);
 
 public slots:
     void defineFilteringMethod();
