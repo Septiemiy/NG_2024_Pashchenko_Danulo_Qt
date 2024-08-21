@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>profanity/profanityUA.txt</file>
+    </qresource>
+</RCC>

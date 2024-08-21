@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Censorship</class>
+ <widget class="QMainWindow" name="Censorship">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>509</width>
+    <height>597</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Censorship</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>21</y>
+      <width>491</width>
+      <height>521</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTextEdit" name="e_inputText"/>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="e_outputText"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="b_filterProfanity">
+       <property name="text">
+        <string>Filter</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>509</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
