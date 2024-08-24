@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>HelloWorld.txt</file>
+    </qresource>
+</RCC>
