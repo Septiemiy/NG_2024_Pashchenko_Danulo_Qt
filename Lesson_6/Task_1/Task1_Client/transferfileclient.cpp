@@ -7,12 +7,20 @@ TransferFileClient::TransferFileClient(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->sb_port->setMaximum(16000);
-
     m_socket = new QTcpSocket();
+    m_fileStatusBar = new QLineEdit();
+    m_fileStatusBar->setText("File upload. Write message and press Send or just send file.");
+    ui->vl_statusFileBar->addWidget(m_fileStatusBar);
+    m_fileStatusBar->hide();
 
-    connect(ui->b_getFile, &QPushButton::clicked, this, &TransferFileClient::toConnect);
-    connect(m_socket, &QTcpSocket::readyRead, this, &TransferFileClient::getFile);
+    ui->sb_port->setMaximum(16000);
+    ui->te_chat->setReadOnly(true);
+
+    connect(ui->b_login, &QPushButton::clicked, this, &TransferFileClient::login);
+    connect(ui->b_send, &QPushButton::clicked, this, &TransferFileClient::sendMessage);
+    connect(m_socket, &QTcpSocket::connected, this, &TransferFileClient::connectionEstablished);
+    connect(m_socket, &QTcpSocket::readyRead, this, &TransferFileClient::messageReceived);
+    connect(ui->b_sendFile, &QPushButton::clicked, this, &TransferFileClient::getFileFromUser);
 }
 
 TransferFileClient::~TransferFileClient()
@@ -20,35 +28,90 @@ TransferFileClient::~TransferFileClient()
     delete ui;
 }
 
-void TransferFileClient::toConnect()
+void TransferFileClient::login()
 {
-    QString address = ui->e_host->text();
+    QString address = ui->e_address->text();
     int port = ui->sb_port->value();
 
-    m_socket->connectToHost(address, port);
-    if(!m_socket->waitForConnected(1000))
+    m_socket->connectToHost(QHostAddress(address),port);
+}
+
+void TransferFileClient::connectionEstablished()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void TransferFileClient::sendMessage()
+{
+    QFileInfo fileInfo(m_filePath);
+    QJsonObject json;
+    json["message"] = ui->te_input->toPlainText();
+    if(!m_filePath.isEmpty())
     {
-       ui->e_message->setText("Failed to connect server");
+        json["filename"] = fileInfo.fileName();
+        json["filedata"] = getFileData(m_filePath);
+    };
+    QJsonDocument jsonDoc { json };
+
+    m_socket->write(jsonDoc.toJson());
+
+    m_filePath.clear();
+    m_fileStatusBar->hide();
+    ui->te_input->clear();
+}
+
+void TransferFileClient::messageReceived()
+{
+    QByteArray dataFromClient = m_socket->readAll();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(dataFromClient);
+
+    if(jsonDoc.object().value("message") != "")
+    {
+        ui->te_chat->append(jsonDoc.object().value("message").toString());
+    }
+    makeFile(&jsonDoc);
+}
+
+void TransferFileClient::getFileFromUser()
+{
+    m_filePath = QFileDialog::getOpenFileName(this, tr("Open txt file"), "/", tr("Text file (*.txt)"));
+    if(!m_filePath.isNull())
+    {
+        createFileStatusBar();
     }
 }
 
-void TransferFileClient::getFile()
+QString TransferFileClient::getFileData(QString filePath)
 {
-    ui->e_message->setText("Getting file...");
-    QByteArray data = m_socket->readAll();
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-
-    makeFile(&jsonDoc);
+    QFile file(filePath);
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QByteArray data = file.readAll();
+        file.close();
+        return data;
+    }
+    else
+    {
+        qDebug() << "Open file failed...";
+    }
 }
 
 void TransferFileClient::makeFile(QJsonDocument *jsonDoc)
 {
-    QFile file(jsonDoc->object().value("filename").toString());
-    if(file.open(QIODevice::WriteOnly))
+    if(jsonDoc->object().contains("filename"))
     {
-        file.write(jsonDoc->object().value("filedata").toString().toLocal8Bit());
+        QFile file(jsonDoc->object().value("filename").toString());
+        if(file.open(QIODevice::WriteOnly))
+        {
+            file.write(jsonDoc->object().value("filedata").toString().toLocal8Bit());
+        }
+        file.close();
+        ui->te_chat->append("(User send file)");
     }
-    file.close();
-    ui->e_message->setText("File transfed");
-    delete jsonDoc;
+}
+
+void TransferFileClient::createFileStatusBar()
+{
+    m_fileStatusBar->show();
 }

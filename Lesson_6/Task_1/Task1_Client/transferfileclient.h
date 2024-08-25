@@ -3,10 +3,13 @@
 
 #include <QMainWindow>
 #include <QTcpSocket>
-#include <QDebug>
-#include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonDocument>
+#include <QFileInfo>
+#include <QFileDialog>
+#include <QDebug>
 #include <QFile>
+#include <QLineEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,13 +26,21 @@ public:
     ~TransferFileClient();
 
 private slots:
-    void toConnect();
-    void getFile();
+    void login();
+    void connectionEstablished();
+    void sendMessage();
+    void messageReceived();
+    void getFileFromUser();
+
+private:
+    QString getFileData(QString filePath);
     void makeFile(QJsonDocument *jsonDoc);
+    void createFileStatusBar();
 
 private:
     Ui::TransferFileClient *ui;
-
     QTcpSocket *m_socket;
+    QString m_filePath;
+    QLineEdit *m_fileStatusBar;
 };
 #endif // TRANSFERFILECLIENT_H

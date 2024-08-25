@@ -23,14 +23,13 @@ public slots:
 
 private slots:
     void newClient();
-
-private:
-    void sendFile(QTcpSocket *client);
-    QString getFileData();
+    void leftClient();
+    void sendToAll(QByteArray message);
+    void messageFromClient();
 
 private:
 
     QTcpServer *m_server = nullptr;
-    QFile m_file = QFile(":/HelloWorld.txt");
+    QVector<QTcpSocket *> m_clients;
 };
 #endif // TRANSFERFILESERVER_H

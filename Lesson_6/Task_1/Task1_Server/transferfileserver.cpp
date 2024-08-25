@@ -35,30 +35,28 @@ void TransferFileServer::newClient()
     QTcpSocket *client = m_server->nextPendingConnection();
     qDebug() << "Client is connected: " << client->localAddress().toString();
 
-    sendFile(client);
+    connect (client, &QTcpSocket::disconnected, this, &TransferFileServer::leftClient);
+    connect (client, &QTcpSocket::readyRead, this, &TransferFileServer::messageFromClient);
+
+    m_clients.append(client);
 }
 
-void TransferFileServer::sendFile(QTcpSocket *client)
+void TransferFileServer::leftClient()
 {
-    QFileInfo fileInfo(m_file.fileName());
-    QJsonObject json {
-        {"filename", fileInfo.fileName()},
-        {"filedata", getFileData()}
-    };
-    QJsonDocument jsonDoc { json };
+    QTcpSocket *socket = (QTcpSocket *)sender();
 
-    client->write(jsonDoc.toJson());
-    m_file.close();
+    qDebug() << "Client " << socket->localAddress().toString() << " has been left";
+    m_clients.removeOne(socket);
 }
 
-QString TransferFileServer::getFileData()
+void TransferFileServer::sendToAll(QByteArray message)
 {
-    if(m_file.open(QIODevice::ReadOnly))
-    {
-        return m_file.readAll();
-    }
-    else
-    {
-        qDebug() << "Open file failed...";
-    }
+    for (QTcpSocket *client : m_clients)
+        client->write(message);
+}
+
+void TransferFileServer::messageFromClient()
+{
+    QTcpSocket *socket = (QTcpSocket *)sender();
+    sendToAll(socket->readAll());
 }
